@@ -1,16 +1,27 @@
-experiments using Roles and RolePlayers in a Context
+using Roles and RolePlayers in a Context
 ====================================================
 My implementation differs from the "official" DCI implementation. I implement a Role, using a RolePlayer.
 It is not the original RolePlayer-object, just temporary enhanced by role-methods, like is normally done in DCI,
 but a new object (implementing the Role plyed by the RolePlayer). For an actor will not be taken to court for murder when having played Macbeth. Neither is the Macbeth-role
 responsible for this low deed: the Role is just an abstraction, a class, not a concrete object. I will try to show why my implementation is better, but to avoid confusion: **this is not DCI!**
 
-So I use an implementation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
+I just call this:
+contextual encapsulation
+------------------------
+Which describes what I am doing. Maybe even more clear than "data-context-interaction". I use an implementation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
 
 See (recurring) discussions about this on the DCI-mailinglist, a.o:
 * PHP wrapper-based implementation that allows nested, recursive contexts: https://groups.google.com/forum/#!topic/object-composition/g4BMSdluuC8
 * The end of injectionless DCI: https://groups.google.com/forum/#!topic/object-composition/MBvBMZzjW_M
 * Roles and RolePlayers: https://groups.google.com/forum/#!topic/object-composition/YDKfrGuLXDo
+
+Gears and Roles
+---------------
+What I don't like in what I see in current DCI-implementations is, that context-specific state is often solved by primitive datastructures
+like arrays. That is because in the "official" DCI there can only be behaviour in Roles, no state. There also is no specific object that has a Context but is not being played as a Role.
+So I made a basic object to act in a Context. It would elsewhere be called an "actor" but that term is too confusing. I also don't
+like a class called "object". So I took a word that has no specific meaning in a programming context yet, as far as I know: Gear. A Gear is a basic object with a Context.
+ A Role is extended from a Gear and has a(or better: is played by a) RolePlayer.
 
 A Dijkstra-implementation in PHP
 --------------------------------
@@ -43,7 +54,6 @@ Touching means:
  Within the context the nodes are only considered within their roles, as players of that specific role. The "node an sich" is only visible *within* the role it is playing,
  not outside it, not in the context in general.
 
-
-
 Herman Peeren
+
 last modified 2013-12-29
