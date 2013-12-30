@@ -61,13 +61,13 @@ Besides the dijstranodes we have another object in the Dijkstra-context: the que
 With "touched" I mean: they have allready  been given a distance from the origin (and a "previous" dijkstranode), but they have not been visited themselves yet.
 
 Visiting means:
- a. touch all unvisited neighbours
- b. remove this visited dijkstranode from the queue
+ 1. touch all unvisited neighbours
+ 2. remove this visited dijkstranode from the queue
 
 Touching means:
- a. compute the distance from origin to the touched neighbour via the current dijkstranode
- b. when this distance is smaller than the distance in that dijkstranode: change the distance and set the current dijkstrnode as previous of that touched dijkstranode
- c. add the touched dijkstranode to the queue (if not there allready)
+ 1. compute the distance from origin to the touched neighbour via the current dijkstranode
+ 2. when this distance is smaller than the distance in that dijkstranode: change the distance and set the current dijkstrnode as previous of that touched dijkstranode
+ 3. add the touched dijkstranode to the queue (if not there allready)
 
  Next current dijkstranode is the dijkstranode with minimum distance to origin in queue. That dijkstranode is given by the queue. The queue has an interface with 3 methods:
  add a dijkstranode, remove a dijkstranode and give the next dijkstranode with a minimum value for distance to origin. The queue is an object that is only important within the context.
