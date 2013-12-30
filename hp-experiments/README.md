@@ -1,7 +1,7 @@
 using Roles and RolePlayers in a Context
 ====================================================
 My implementation differs from the "official" DCI implementation. I instantiate a Role, using a RolePlayer.
-It is *not* the original RolePlayer-object, just temporary enhanced by role-methods, like is normally done in DCI,
+It is *not* the original RolePlayer-object, temporary enhanced by role-methods, like is normally done in DCI,
 but a new object (instantiating the Role played by the RolePlayer). For an actor will not be taken to court for murder when having played Macbeth. Neither is the Macbeth-role
 responsible for this low deed: the Role is just an abstraction, a class, not a concrete object. I will try to show why my implementation is better, but to avoid confusion: **this is not DCI!**
 
