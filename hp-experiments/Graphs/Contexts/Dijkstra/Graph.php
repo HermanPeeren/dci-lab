@@ -1,4 +1,5 @@
 <?php
+namespace Hpexpi\Graphs\Dijkstra;
 /**
  * the DijkstraGraph: a collection of ALL dijkstranodes
  * Another implementation would be to only create dijkstranodes when needed (lazy instantiation)
@@ -6,25 +7,28 @@
  * 
  */
 
-class DijkstraGraph
+use BuildingBlocks\Contextual\Role;
+
+class Graph extends Role
 {
 	private $context; // this must be part of a general Role class
-	private $dijkstraGraph;
+	private $graph;
 
 	/**
 	 * constructor
 	 *
 	 */
-	public function __construct($graph, $context)
+	public function __construct($context, $graph)
 	{
 		$this->context = $context;
 
-		$this->dijkstraGraph = array();
+		$this->graph = array();
 		// the graph is a collection of nodes, each defining their own neighbours. Now, let them ALL play the role of a DijkstraNode.
 		foreach ($graph->getNodes() as $node)
 		{
-			$this->dijkstraGraph[] = new DijkstraNode($node, $context);//? do I need the id of the nodes to index them???
+			$this->graph[] = new Node($context, $node);//? do I need the id of the nodes to index them???
 		}
+		//todo: register graph at context!
 	}
 
 	/**
@@ -36,8 +40,6 @@ class DijkstraGraph
 		$context = $this->context;
 
 		// initialisation of origin and destination as DijkstraNodes; The Dijkstranodes have the same id as the rolePlayers
-		// N.B.: would this give a problem if we have different types of objects as roleplayers, like with the stars and circles example?
-		// or how is this with the same RolePlayer that is used several times?
 		$origin = $this->find($origin_id);
 		$destination = $this->find($destination_id);
 
@@ -70,7 +72,7 @@ class DijkstraGraph
 	 */
 	private function find($id)
 	{
-		foreach ($this->$dijkstraGraph as $dijkstranode)
+		foreach ($this->$graph as $dijkstranode)
 		{
 			if ($dijkstranode->id == $id) return $dijkstranode;
 		}

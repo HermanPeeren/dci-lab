@@ -15,15 +15,40 @@ See (recurring) discussions about this on the DCI-mailinglist, a.o:
 * The end of injectionless DCI: https://groups.google.com/forum/#!topic/object-composition/MBvBMZzjW_M
 * Roles and RolePlayers: https://groups.google.com/forum/#!topic/object-composition/YDKfrGuLXDo
 
-Gears and Roles
+Autonomous Roles and Roles with multiple RolePlayers
 ---------------
-What I don't like in what I see in current DCI-implementations is, that context-specific state is solved by context-properties,
-often implemented with primitive datastructures like integers, strings and arrays. That is because in the "official" DCI in Roles there can only be behaviour, no state.
-Also, there is no specific object that has a Context but is not being played as a Role.
-So I made a basic object to act in a Context. It would elsewhere be called an "actor" but that term is too confusing. I also don't
-like a class called "object". So I took a word that has no specific meaning in a programming context yet, as far as I know: Gear. A Gear is a basic object with a Context.
- A Role is extended from a Gear and is played by a RolePlayer. In my Dijkstra-implementation the Queue is a Gear (a context-specific object, but not a Role),
- and dijkstranodes are Roles played by nodes.
+What I don't like in some of the current DCI-examples is, that context-specific state can only be implemented by context-properties,
+that are not bound to the objects in the context, even if they would fit better there. That is because in the "official"
+DCI, Roles can only have behaviour, no state. During a Dijkstra algorithm for instance: a node can be visited or not.
+Or can have distances to the origin. I'd say that those properties belong to the node-objects in their roles in the context,
+not just somewhere as some property in the context. Also, in current DCI there is no specific object that has a Context
+but is not being played as a Role.
+
+
+At first I made a basic object to act in a Context.
+A Role was extended from a that basic object and is played by a RolePlayer.
+Another way to look at those basic objects is as Roles that have no RolePlayer; I called the
+"autonomous Roles" . Then Roles are simply all objects in a Context, some of which are not played by a RolePlayer.
+In my Dijkstra-implementation the Queue is such a basic object (a context-specific object, but not a Role),
+and dijkstranodes are Roles played by nodes.
+
+ There is a third reason why I instantiate Roles: as is a.o. stated in http://www.artima.com/articles/dci_vision.html:
+ "Object-orientation pushed us into a world where we had to split up the algorithm and distribute it across several objects".
+ However, if a Role is played by domain-objects then we still distribute the behaviour (what the system does) over the data-objects
+ (what the system is). We still divide behaviour in the roles among the objects. The only place where we can
+ keep the algorithm as a whole is at the system-level: as context-methods. That is: procedures that operate on data (which is the
+ "procedural programming" paradigm). Nothing necessarily wrong with that: in a way DCI is a hybrid paradigm of class oriented and procedural
+  programming. One of the key points of Object Thinking however is that data is meaningless without behaviour and behaviour
+ is always on specific data; the two are coupled. I liked that so very much when I started doing Simula by the end of the seventies:
+ to look for the smallest building blocks of unseparable data/behaviour.
+
+ What the system does, the script, the algorithm, might not fit into an existing object.
+ Or might even use several objects as RolePlayers (like a fake horse, played by two performers).
+ Also see section 8.2.4 "A Special Case: One-to-Many Mapping of Object Roles to Objects" in the Lean Architecture book.
+ Now we get a little bit different picture:
+ Roles that are instantiated as objects, played by zero or more RolePlayers. All objects in a Context are then called Roles.
+ From within a Role you can interact with all other Roles in that Context. When a Role is instantiated without a RolePlayer I call it an autonomous Role.
+
 
 A Dijkstra-implementation in PHP
 --------------------------------

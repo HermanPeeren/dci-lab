@@ -1,4 +1,5 @@
 <?php
+namespace Hpexpi\Graphs\Dijkstra;
 /**
  * An instance of this class is the queue in a DijkstraContext.
  * It is a collection of unvisited but touched dijkstranodes, ordered by distance_to_origin.
@@ -7,21 +8,19 @@
  * Created by Herman Peeren, December 2013
  * 
  */
-class DijkstraQueue
+
+use BuildingBlocks\Contextual\Role;
+
+class Queue extends Role
 {
-    private $q;
+    private $q = array();
 
-    public function __construct()
-    {
-        $this->q = array();
-    }
-
-    public function add(DijkstraNode $dijkstranode)
+    public function add(Node $dijkstranode)
     {
 	    //$this->q->add($dijkstranode); // insert a not-yet existing dijkstranode while keeping the ordering
     }
 
-    public function remove(DijkstraNode $dijkstranode)
+    public function remove(Node $dijkstranode)
     {
 	    //$this->q->remove($dijkstranode);
     }

@@ -8,7 +8,7 @@ namespace BuildingBlocks\Contextual;
 
 class Context
 {
-	public function __construct($mapping)
+	public function __construct($mapping=null)
 	{
 		//instantiate Roles (with RolePlayers) and other Gear using the mapping
 	}
