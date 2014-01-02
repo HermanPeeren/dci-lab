@@ -1,14 +1,15 @@
 using Roles and RolePlayers in a Context
 ====================================================
 My implementation differs from the "official" DCI implementation. I instantiate a Role, using a RolePlayer.
-It is *not* the original RolePlayer-object, temporary enhanced by role-methods, like is normally done in DCI,
+In my implementation objects in a context are *not* the original RolePlayer-objects, temporary enhanced by role-methods, like is normally done in DCI,
 but a new object (instantiating the Role played by the RolePlayer). For an actor will not be taken to court for murder when having played Macbeth. Neither is the Macbeth-role
 responsible for this low deed: the Role is just an abstraction, a class, not a concrete object. I will try to show why my implementation is better, but to avoid confusion: **this is not DCI!**
 
 I just call this:
 contextual encapsulation
 ------------------------
-Which describes what I am doing. Maybe even more clear than "Data-Context-Interaction". I use an instantiation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
+Which describes what I am doing. Maybe as label even more clear than "Data-Context-Interaction". I use an instantiation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
+However, in my implementation of the Dijkstra algorithm with a context, seen as an "oracle", I didn't experience that schizophrenic problem...
 
 See (recurring) discussions about this on the DCI-mailinglist, a.o:
 * PHP wrapper-based implementation that allows nested, recursive contexts: https://groups.google.com/forum/#!topic/object-composition/g4BMSdluuC8
@@ -49,9 +50,40 @@ and dijkstranodes are Roles played by nodes.
  Roles that are instantiated as objects, played by zero or more RolePlayers. All objects in a Context are then called Roles.
  From within a Role you can interact with all other Roles in that Context. When a Role is instantiated without a RolePlayer I call it an autonomous Role.
 
+The algorithm as a system-method, injecting context objects and observers
+-------------------------------------------------------------------------
+There are 3 ways to implement an algorithm in a context:
+1. as a **system-method of that context**. In this way all interaction of the context-objects is in this context method.
+The context is the "subject" of this method: you call DijkstraContext.ShortestPathmethod() or MoneyTansferContext.TransferMethod().
+It has similarities to procedural programming: an algorithm acting upon data. Not: the objects interacting themselves.
+2. as a **method of a context-object**. Like in the money transfer examples, where transfer() is a method of the source account.
+In the same way ShortestPath() can be a method of the graph in the Dijkstra context. If the object now wants to interact with another object in
+that context (for instance with the destination account), then that other object has to be known by the acting object (the "subject").
+With the money transfer example that is done by injecting the destination account as a parameter of the method. With the Dijkstra implementation
+you can make shortestPath() a method of the graph in the Dijkstra context. In that method you'll need interaction with a queue:
+that can be a part of the graph in the Dijkstra context or must be injected into the graph-object, or at least in that
+shortestPath()-method. A method can be to use the **context as a container** and injecting that container into each object
+that needs interaction with other objects in that context. All objects of that context are then available in the object in which the container is injected.
+I experimented with it, using the context as a property in every Role. Whenever a new object is made in the context, it has to be
+"registered" at that context-object.
+3. using **observers**: all objects only send messages and interact with messages that fly around in the context. Ihis is the most
+decoupled implementation, honouring the "tell, don't ask" principle. The context has a dispatcher to trigger the objects
+that act upon the messages. The effect however is, that the algorithm will be scattered over the objects. If you would
+for instance use this for a Dijkstra implementation, the shortestPath() method would send a message "can anybody trigger the first
+node to be visited", a queue might send a message "this is the next node in me; do with it whatever you want", a node might react "that's me,
+I'll mark myself as visited and send a message to my neighbours to update their distance to the origin and trigger the queue to get the next
+node to visit after that", the neigbours can pick up that message saying "hey that's a message for me, I'll compare that distance
+to what I have now and if smaller will update my distance and let the queue know about it", etc. In this implementation
+the algorithm doesn't have to know anything about who picks up the message and do a next thing. In my opinion, this is the most
+pure OO implementation, but the algorithm is indeed scattered over the objects. I don't see it as a disadvantage: each object
+is easy to understand and easy to test in isolation. Obviously it is contrary to the basic ideas of DCI.
 
 A Dijkstra-implementation in PHP
 --------------------------------
+In my implementation I use the second way described above: shortestPath() is a method of the graph in the Dijkstra-context.
+The queue is a part of the graph in the Dijkstra context. The nodes are also part of the graph, so no other objects need to be injected
+in the graph-object or its methods in order to interact with them.
+
 We have a DijkstraNode-role, which is the context-specific behaviour (and state) that will be played by a node.
 The new objects are called "dijkstranodes", which is not just a "role-object", but a role played by a specific roleplayer
 (which is exactly the same as a roleplayer who plays a role). Within the context there is no "roleplayer an sich",
