@@ -8,7 +8,7 @@ responsible for this low deed: the Role is just an abstraction, a class, not a c
 I just call this:
 contextual encapsulation
 ------------------------
-Which describes what I am doing. Maybe as label even more clear than "Data-Context-Interaction". I use an instantiation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
+Maybe as label even more clear than "Data-Context-Interaction". I use an instantiation of a Role, in which a concrete RolePlayer is injected. In the official DCI this is called a "wrapper" and seen as wrong, as it would lead to "object schizophrenia".
 However, in my implementation of the Dijkstra algorithm with a context, seen as an "oracle", I didn't experience that schizophrenic problem...
 
 See (recurring) discussions about this on the DCI-mailinglist, a.o:
@@ -53,9 +53,11 @@ and dijkstranodes are Roles played by nodes.
 The algorithm as a system-method, injecting context objects and observers
 -------------------------------------------------------------------------
 There are 3 ways to implement an algorithm in a context:
+
 1. as a **system-method of that context**. In this way all interaction of the context-objects is in this context method.
 The context is the "subject" of this method: you call DijkstraContext.ShortestPathmethod() or MoneyTansferContext.TransferMethod().
 It has similarities to procedural programming: an algorithm acting upon data. Not: the objects interacting themselves.
+
 2. as a **method of a context-object**. Like in the money transfer examples, where transfer() is a method of the source account.
 In the same way ShortestPath() can be a method of the graph in the Dijkstra context. If the object now wants to interact with another object in
 that context (for instance with the destination account), then that other object has to be known by the acting object (the "subject").
@@ -66,6 +68,7 @@ shortestPath()-method. A method can be to use the **context as a container** and
 that needs interaction with other objects in that context. All objects of that context are then available in the object in which the container is injected.
 I experimented with it, using the context as a property in every Role. Whenever a new object is made in the context, it has to be
 "registered" at that context-object.
+
 3. using **observers**: all objects only send messages and interact with messages that fly around in the context. Ihis is the most
 decoupled implementation, honouring the "tell, don't ask" principle. The context has a dispatcher to trigger the objects
 that act upon the messages. The effect however is, that the algorithm will be scattered over the objects. If you would
