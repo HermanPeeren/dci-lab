@@ -1,5 +1,8 @@
 using Roles and RolePlayers in a Context
 ====================================================
+Disclaimer: although I called this repo DCI-ES and I'm certainly inspired by DCI, I have no claims at all that my investigations are "proper DCI" as intended by the core DCI-developers. I call this part **Contextual Encapsulation**.
+Except for this disclaimer this unfinished repo was last worked on in Januari 2014.
+
 My implementation differs from the "official" DCI implementation. I instantiate a Role, using a RolePlayer.
 In my implementation objects in a context are *not* the original RolePlayer-objects, temporary enhanced by role-methods, like is normally done in DCI,
 but a new object (instantiating the Role played by the RolePlayer). For an actor will not be taken to court for murder when having played Macbeth. Neither is the Macbeth-role
